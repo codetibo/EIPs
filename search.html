@@ -267,111 +267,107 @@ permalink: /search/
     box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
   }
 
-  /* Dark mode overrides */
-  @media (prefers-color-scheme: dark) {
-    .eip-search-page__input {
-      background: var(--color-surface, #14141f);
-      border-color: var(--color-border, #2a2a3a);
-      color: var(--color-text, #e8e8ed);
-    }
-    .eip-search-page__input::placeholder { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page__input:focus {
-      border-color: var(--color-accent, #6b8aff);
-      box-shadow: 0 0 0 4px rgba(107, 138, 255, 0.15);
-    }
-    .eip-search-page__header { border-color: var(--color-border, #2a2a3a); }
-    .eip-search-page__count { color: var(--color-text-secondary, #8888a0); }
-    .eip-search-page__range { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page #eip-search-page-results .eip-search__result {
-      border-color: var(--color-border, #2a2a3a);
-      background: var(--color-surface, #14141f);
-    }
-    .eip-search-page #eip-search-page-results .eip-search__result:hover {
-      border-color: var(--color-accent-light, #2d3060);
-      background: var(--color-accent-soft, #1a1d3a);
-    }
-    .eip-search-page__page-btn {
-      background: var(--color-bg, #0d0d15);
-      border-color: var(--color-border, #2a2a3a);
-      color: var(--color-text-secondary, #8888a0);
-    }
-    .eip-search-page__page-btn:hover {
-      background: var(--color-accent-soft, #1a1d3a);
-      border-color: var(--color-accent-light, #2d3060);
-      color: var(--color-text, #e8e8ed);
-    }
-    .eip-search-page__page-btn--active {
-      background: var(--color-accent, #6b8aff);
-      border-color: var(--color-accent, #6b8aff);
-      color: #fff;
-    }
-    .eip-search-page__page-btn--active:hover {
-      background: var(--color-accent-hover, #8da3ff);
-      border-color: var(--color-accent-hover, #8da3ff);
-    }
-    .eip-search-page__page-btn--disabled { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page__page-dots { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page__filters { border-color: var(--color-border, #2a2a3a); }
-    .eip-search-page__filters--type { border-color: var(--color-border, #2a2a3a); }
-    .eip-search-page__filter-label { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page__filter-chip {
-      background: var(--color-bg, #0d0d15);
-      border-color: var(--color-border, #2a2a3a);
-      color: var(--color-text-secondary, #8888a0);
-    }
-    .eip-search-page__filter-chip:hover {
-      background: var(--color-accent-soft, #1a1d3a);
-      border-color: var(--color-accent-light, #2d3060);
-      color: var(--color-text, #e8e8ed);
-    }
-    .eip-search-page__filter-chip--active {
-      background: var(--color-accent, #6b8aff);
-      border-color: var(--color-accent, #6b8aff);
-      color: #fff;
-    }
-    .eip-search-page__filter-chip--active:hover {
-      background: var(--color-accent-hover, #8da3ff);
-      border-color: var(--color-accent-hover, #8da3ff);
-    }
-    .eip-search-page__filter-chip--clear {
-      background: transparent;
-      border-color: var(--color-border, #2a2a3a);
-      color: var(--color-text-tertiary, #5c5c72);
-    }
-    .eip-search-page__filter-chip--clear:hover {
-      background: var(--color-accent-soft, #1a1d3a);
-      border-color: var(--color-accent-light, #2d3060);
-      color: var(--color-accent, #6b8aff);
-    }
-    .eip-search-page__filter-chip--clear-all {
-      background: transparent;
-      border-color: #5a4040;
-      color: #b77;
-    }
-    .eip-search-page__filter-chip--clear-all:hover {
-      background: #3a2525;
-      border-color: #966;
-      color: #e66;
-    }
-    .eip-search-page__filters--clear-all { border-color: #4a3535; }
-    .eip-search-page__author-input {
-      background: var(--color-surface, #14141f);
-      border-color: var(--color-border, #2a2a3a);
-      color: var(--color-text, #e8e8ed);
-    }
-    .eip-search-page__author-input::placeholder { color: var(--color-text-tertiary, #5c5c72); }
-    .eip-search-page__author-input:focus {
-      border-color: var(--color-accent, #6b8aff);
-      box-shadow: 0 0 0 3px rgba(107, 138, 255, 0.15);
-    }
-
-    /* Search result highlights */
-    .eip-search-page .eip-search__result mark,
-    .eip-search-page .eip-search__result-title mark,
-    .eip-search-page .eip-search__result-desc mark {
-      background: #3a2e00;
-      color: #e8e8e8;
-    }
+  /* ----- Dark mode (via data-theme attribute) ----- */
+  html[data-theme="dark"] .eip-search-page__input {
+    background: var(--color-surface, #14141f);
+    border-color: var(--color-border, #2a2a3a);
+    color: var(--color-text, #e8e8ed);
+  }
+  html[data-theme="dark"] .eip-search-page__input::placeholder { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page__input:focus {
+    border-color: var(--color-accent, #6b8aff);
+    box-shadow: 0 0 0 4px rgba(107, 138, 255, 0.15);
+  }
+  html[data-theme="dark"] .eip-search-page__header { border-color: var(--color-border, #2a2a3a); }
+  html[data-theme="dark"] .eip-search-page__count { color: var(--color-text-secondary, #8888a0); }
+  html[data-theme="dark"] .eip-search-page__range { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page #eip-search-page-results .eip-search__result {
+    border-color: var(--color-border, #2a2a3a);
+    background: var(--color-surface, #14141f);
+  }
+  html[data-theme="dark"] .eip-search-page #eip-search-page-results .eip-search__result:hover {
+    border-color: var(--color-accent-light, #2d3060);
+    background: var(--color-accent-soft, #1a1d3a);
+  }
+  html[data-theme="dark"] .eip-search-page__page-btn {
+    background: var(--color-bg, #0d0d15);
+    border-color: var(--color-border, #2a2a3a);
+    color: var(--color-text-secondary, #8888a0);
+  }
+  html[data-theme="dark"] .eip-search-page__page-btn:hover {
+    background: var(--color-accent-soft, #1a1d3a);
+    border-color: var(--color-accent-light, #2d3060);
+    color: var(--color-text, #e8e8ed);
+  }
+  html[data-theme="dark"] .eip-search-page__page-btn--active {
+    background: var(--color-accent, #6b8aff);
+    border-color: var(--color-accent, #6b8aff);
+    color: #fff;
+  }
+  html[data-theme="dark"] .eip-search-page__page-btn--active:hover {
+    background: var(--color-accent-hover, #8da3ff);
+    border-color: var(--color-accent-hover, #8da3ff);
+  }
+  html[data-theme="dark"] .eip-search-page__page-btn--disabled { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page__page-dots { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page__filters { border-color: var(--color-border, #2a2a3a); }
+  html[data-theme="dark"] .eip-search-page__filters--type { border-color: var(--color-border, #2a2a3a); }
+  html[data-theme="dark"] .eip-search-page__filter-label { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page__filter-chip {
+    background: var(--color-bg, #0d0d15);
+    border-color: var(--color-border, #2a2a3a);
+    color: var(--color-text-secondary, #8888a0);
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip:hover {
+    background: var(--color-accent-soft, #1a1d3a);
+    border-color: var(--color-accent-light, #2d3060);
+    color: var(--color-text, #e8e8ed);
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--active {
+    background: var(--color-accent, #6b8aff);
+    border-color: var(--color-accent, #6b8aff);
+    color: #fff;
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--active:hover {
+    background: var(--color-accent-hover, #8da3ff);
+    border-color: var(--color-accent-hover, #8da3ff);
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--clear {
+    background: transparent;
+    border-color: var(--color-border, #2a2a3a);
+    color: var(--color-text-tertiary, #5c5c72);
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--clear:hover {
+    background: var(--color-accent-soft, #1a1d3a);
+    border-color: var(--color-accent-light, #2d3060);
+    color: var(--color-accent, #6b8aff);
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--clear-all {
+    background: transparent;
+    border-color: #5a4040;
+    color: #b77;
+  }
+  html[data-theme="dark"] .eip-search-page__filter-chip--clear-all:hover {
+    background: #3a2525;
+    border-color: #966;
+    color: #e66;
+  }
+  html[data-theme="dark"] .eip-search-page__filters--clear-all { border-color: #4a3535; }
+  html[data-theme="dark"] .eip-search-page__author-input {
+    background: var(--color-surface, #14141f);
+    border-color: var(--color-border, #2a2a3a);
+    color: var(--color-text, #e8e8ed);
+  }
+  html[data-theme="dark"] .eip-search-page__author-input::placeholder { color: var(--color-text-tertiary, #5c5c72); }
+  html[data-theme="dark"] .eip-search-page__author-input:focus {
+    border-color: var(--color-accent, #6b8aff);
+    box-shadow: 0 0 0 3px rgba(107, 138, 255, 0.15);
+  }
+  html[data-theme="dark"] .eip-search-page .eip-search__result mark,
+  html[data-theme="dark"] .eip-search-page .eip-search__result-title mark,
+  html[data-theme="dark"] .eip-search-page .eip-search__result-desc mark {
+    background: #3a2e00;
+    color: #e8e8e8;
   }
 </style>
 
