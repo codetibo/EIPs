@@ -155,6 +155,7 @@
         counter.textContent = 'Showing ' + loadedCount + ' of ' + totalRows;
       }
       updateLoadMoreCount();
+      updateGoTop();
     }
 
     function updateUrl() {
@@ -174,6 +175,7 @@
     sentinel.innerHTML = '' +
       '<div class="eip-infinite__loader"><span class="eip-infinite__spinner"></span> Loading more...</div>' +
       '<button class="eip-infinite__load-more" id="eip-load-more-btn">Load more <span class="eip-infinite__load-more-count" id="eip-load-more-count"></span></button>' +
+      '<button class="eip-infinite__go-top" id="eip-infinite-go-top">&#8593; Back to top</button>' +
       '<div class="eip-infinite__complete">&#10003; All ' + totalRows + ' EIPs loaded</div>';
     controlsEl.parentNode.insertBefore(sentinel, controlsEl.nextSibling);
 
@@ -200,14 +202,36 @@
           loadNextBatch();
         });
       }
+
+      // Bind click handler for go-top button
+      var goTop = document.getElementById('eip-infinite-go-top');
+      if (goTop) {
+        goTop.addEventListener('click', function() {
+          container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+
+    // Show or hide the go-top button based on how much has been loaded
+    function updateGoTop() {
+      var goTop = document.getElementById('eip-infinite-go-top');
+      if (!goTop) return;
+      // Show after at least 2 batches worth of rows have been loaded
+      if (loadedCount > batchSize * 2 && !isComplete) {
+        goTop.style.display = '';
+      } else {
+        goTop.style.display = 'none';
+      }
     }
 
     // Show loader function
     function showLoader() {
       var loader = sentinel.querySelector('.eip-infinite__loader');
       var btn = document.getElementById('eip-load-more-btn');
+      var goTop = document.getElementById('eip-infinite-go-top');
       if (loader) loader.style.display = '';
       if (btn) btn.style.display = 'none';
+      if (goTop) goTop.style.display = 'none';
     }
 
     function hideLoader() {
@@ -222,9 +246,11 @@
     function showComplete() {
       var loader = sentinel.querySelector('.eip-infinite__loader');
       var btn = document.getElementById('eip-load-more-btn');
+      var goTop = document.getElementById('eip-infinite-go-top');
       var complete = sentinel.querySelector('.eip-infinite__complete');
       if (loader) loader.style.display = 'none';
       if (btn) btn.style.display = 'none';
+      if (goTop) goTop.style.display = 'none';
       if (complete) complete.style.display = '';
     }
 
