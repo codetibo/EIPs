@@ -167,6 +167,34 @@
   font-size: 0.9rem;
 }
 
+/* "View all results" link at bottom of dropdown */
+.eip-search__view-all {
+  display: block;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #726E97 !important;
+  text-decoration: none !important;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 4px;
+  transition: background 0.15s ease;
+}
+
+.eip-search__view-all:hover,
+.eip-search__view-all:focus {
+  background: #f5f3ff;
+  outline: none;
+}
+
+/* Tip shown when dropdown is idle */
+.eip-search__tip {
+  padding: 20px 16px;
+  text-align: center;
+  color: #bbb;
+  font-size: 0.85rem;
+}
+
 /* Highlighted matching text */
 .eip-search__result mark,
 .eip-search__result-title mark,
@@ -315,6 +343,20 @@
   .eip-search__result-desc mark {
     background: #554e1a;
     color: #e8e8e8;
+  }
+
+  .eip-search__view-all {
+    border-color: #3a3a3a;
+    color: #a8a4d0 !important;
+  }
+
+  .eip-search__view-all:hover,
+  .eip-search__view-all:focus {
+    background: #33314a;
+  }
+
+  .eip-search__tip {
+    color: #666;
   }
 
   .eip-search__empty {
