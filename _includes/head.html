@@ -118,6 +118,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var r = document.querySelectorAll('.reveal');
+      r.forEach(function(e) { e.classList.add('js-reveal'); });
       if (r.length && 'IntersectionObserver' in window) {
         var o = new IntersectionObserver(function(e) {
           e.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('is-visible'); o.unobserve(e.target); } });

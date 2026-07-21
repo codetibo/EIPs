@@ -4,18 +4,12 @@ title: Home
 ---
 
 <div class="eip-hero reveal">
-  <div class="eip-hero__eyebrow">
-    <span class="eip-hero__eyebrow-dot"></span>
-    Ethereum Standards
-  </div>
   <h1 class="eip-hero__title">
-    <span class="eip-hero__title-accent">Ethereum Improvement</span><br />
-    Proposals
+    Ethereum Improvement Proposals
   </h1>
   <p class="eip-hero__subtitle">
     EIPs describe standards for the Ethereum platform, including core protocol specifications,
-    client APIs, and contract standards. Network upgrades are discussed separately in
-    the <a target="_blank" href="https://github.com/ethereum/pm/">Ethereum Project Management</a> repository.
+    client APIs, and contract standards.
   </p>
 
   <div class="eip-hero__stats">
@@ -31,124 +25,42 @@ title: Home
       <span class="eip-hero__stat-number">{{ site.pages | where: "status", "Living" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</span>
       <span class="eip-hero__stat-label">Living</span>
     </div>
-    {% assign in_progress_eips = site.pages | where_exp: "page", "page.url contains '/EIPS/'" %}
-    {% assign in_progress_count = in_progress_eips | where: "status", "Draft" | size | plus: (in_progress_eips | where: "status", "Review" | size) | plus: (in_progress_eips | where: "status", "Last Call" | size) %}
-    <div class="eip-hero__stat">
-      <span class="eip-hero__stat-number">{{ in_progress_count }}</span>
-      <span class="eip-hero__stat-label">In Progress</span>
-    </div>
   </div>
 
   <a href="{{ site.baseurl }}/search/" class="eip-hero__cta">
-    Search all EIPs
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="5" y1="12" x2="19" y2="12"/>
-      <polyline points="12 5 19 12 12 19"/>
-    </svg>
+    Search all EIPs →
   </a>
 </div>
 
-<hr class="reveal" />
+<hr />
 
-<h2 class="section-heading reveal">Browse by Category</h2>
+<h2>Browse by Category</h2>
 
-<div class="eip-categories">
-  {% assign core_eips = site.pages | where: "type", "Standards Track" | where: "category", "Core" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "core" | relative_url }}" class="eip-category-card eip-category-card--core reveal reveal-delay-1">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
-    </div>
-    <div class="eip-category-card__title">Core</div>
-    <div class="eip-category-card__count">{{ core_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">Improvements requiring a consensus fork, or relevant to core dev discussions.</div>
-  </a>
+<table class="eiptable">
+  <thead>
+    <tr><th class="eipnum">Category</th><th class="title">Description</th><th class="author">EIPs</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><a href="{{ "core" | relative_url }}">Core</a></td><td>Consensus fork improvements and core dev topics</td><td>{{ site.pages | where: "type", "Standards Track" | where: "category", "Core" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+    <tr><td><a href="{{ "networking" | relative_url }}">Networking</a></td><td>Devp2p, LES, and network protocol improvements</td><td>{{ site.pages | where: "type", "Standards Track" | where: "category", "Networking" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+    <tr><td><a href="{{ "interface" | relative_url }}">Interface</a></td><td>Client API/RPC specifications and standards</td><td>{{ site.pages | where: "type", "Standards Track" | where: "category", "Interface" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+    <tr><td><a href="{{ "erc" | relative_url }}">ERC</a></td><td>Application-level standards: tokens, registries, account abstraction</td><td>{{ site.pages | where: "type", "Standards Track" | where: "category", "ERC" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+    <tr><td><a href="{{ "meta" | relative_url }}">Meta</a></td><td>Process EIPs describing changes to Ethereum's decision-making</td><td>{{ site.pages | where: "type", "Meta" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+    <tr><td><a href="{{ "informational" | relative_url }}">Informational</a></td><td>General guidelines and information for the Ethereum community</td><td>{{ site.pages | where: "type", "Informational" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</td></tr>
+  </tbody>
+</table>
 
-  {% assign networking_eips = site.pages | where: "type", "Standards Track" | where: "category", "Networking" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "networking" | relative_url }}" class="eip-category-card eip-category-card--networking reveal reveal-delay-2">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-    </div>
-    <div class="eip-category-card__title">Networking</div>
-    <div class="eip-category-card__count">{{ networking_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">Improvements around devp2p, LES, whisper, and swarm network protocols.</div>
-  </a>
+<h2>Contributing</h2>
+<p>First review <a href="{{ "/EIPS/eip-1" | relative_url }}">EIP-1</a>. Then clone the repository and add your EIP to it. There is a <a href="https://github.com/ethereum/EIPs/blob/master/eip-template.md?plain=1">template EIP here</a>. Then submit a Pull Request to Ethereum's <a href="https://github.com/ethereum/EIPs">EIPs repository</a>.</p>
 
-  {% assign interface_eips = site.pages | where: "type", "Standards Track" | where: "category", "Interface" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "interface" | relative_url }}" class="eip-category-card eip-category-card--interface reveal reveal-delay-3">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
-    </div>
-    <div class="eip-category-card__title">Interface</div>
-    <div class="eip-category-card__count">{{ interface_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">Client API/RPC specifications and language-level standards.</div>
-  </a>
-
-  {% assign erc_eips = site.pages | where: "type", "Standards Track" | where: "category", "ERC" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "erc" | relative_url }}" class="eip-category-card eip-category-card--erc reveal reveal-delay-4">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
-    </div>
-    <div class="eip-category-card__title">ERC</div>
-    <div class="eip-category-card__count">{{ erc_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">Application-level standards: tokens, name registries, account abstraction.</div>
-  </a>
-
-  {% assign meta_eips = site.pages | where: "type", "Meta" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "meta" | relative_url }}" class="eip-category-card eip-category-card--meta reveal reveal-delay-5">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </div>
-    <div class="eip-category-card__title">Meta</div>
-    <div class="eip-category-card__count">{{ meta_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">Process EIPs describing changes to Ethereum's decision-making process.</div>
-  </a>
-
-  {% assign info_eips = site.pages | where: "type", "Informational" | where_exp: "page", "page.url contains '/EIPS/'" %}
-  <a href="{{ "informational" | relative_url }}" class="eip-category-card eip-category-card--informational reveal reveal-delay-6">
-    <div class="eip-category-card__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-    </div>
-    <div class="eip-category-card__title">Informational</div>
-    <div class="eip-category-card__count">{{ info_eips | size }} EIPs</div>
-    <div class="eip-category-card__desc">General guidelines and information for the Ethereum community.</div>
-  </a>
-</div>
-
-<h2 id="contributing" class="section-heading reveal">Contributing</h2>
-<div class="reveal">
-  <p>First review <a href="{{ "/EIPS/eip-1" | relative_url }}">EIP-1</a>. Then clone the repository and add your EIP to it. There is a <a href="https://github.com/ethereum/EIPs/blob/master/eip-template.md?plain=1">template EIP here</a>. Then submit a Pull Request to Ethereum's <a href="https://github.com/ethereum/EIPs">EIPs repository</a>.</p>
-</div>
-
-<h2 id="eip-status-terms" class="section-heading reveal">EIP Status Terms</h2>
-<div class="reveal">
-  <ul>
-    <li><strong>Idea</strong> — An idea that is pre-draft. This is not tracked within the EIP Repository.</li>
-    <li><strong>Draft</strong> — The first formally tracked stage of an EIP in development.</li>
-    <li><strong>Review</strong> — An EIP Author marks an EIP as ready for and requesting Peer Review.</li>
-    <li><strong>Last Call</strong> — The final review window for an EIP before moving to FINAL.</li>
-    <li><strong>Final</strong> — This EIP represents the final standard.</li>
-    <li><strong>Stagnant</strong> — Any EIP in Draft or Review if inactive for 6+ months.</li>
-    <li><strong>Withdrawn</strong> — The EIP Author(s) have withdrawn the proposed EIP.</li>
-    <li><strong>Living</strong> — Designed to be continually updated and not reach finality.</li>
-  </ul>
-</div>
-
-<h2 id="eip-types" class="section-heading reveal">EIP Types</h2>
-<div class="reveal">
-  <p>EIPs are separated into a number of types, and each has its own list of EIPs.</p>
-</div>
-
-<h3 class="reveal">Standards Track</h3>
-<div class="reveal">
-  <p>Describes any change that affects most or all Ethereum implementations. Further broken down into Core, Networking, Interface, and ERC categories — browse each above.</p>
-</div>
-
-<h3 class="reveal"><a href="{{ "meta" | relative_url }}">Meta</a></h3>
-<div class="reveal">
-  <p>Describes a process surrounding Ethereum or proposes a change to (or an event in) a process. Process EIPs are like Standards Track EIPs but apply to areas other than the Ethereum protocol itself.</p>
-</div>
-
-<h3 class="reveal"><a href="{{ "informational" | relative_url }}">Informational</a></h3>
-<div class="reveal">
-  <p>Describes a Ethereum design issue, or provides general guidelines or information to the Ethereum community, but does not propose a new feature.</p>
-</div>
+<h2>EIP Status Terms</h2>
+<ul>
+  <li><strong>Idea</strong> — An idea that is pre-draft. This is not tracked within the EIP Repository.</li>
+  <li><strong>Draft</strong> — The first formally tracked stage of an EIP in development.</li>
+  <li><strong>Review</strong> — An EIP Author marks an EIP as ready for and requesting Peer Review.</li>
+  <li><strong>Last Call</strong> — The final review window for an EIP before moving to FINAL.</li>
+  <li><strong>Final</strong> — This EIP represents the final standard.</li>
+  <li><strong>Stagnant</strong> — Any EIP in Draft or Review if inactive for 6+ months.</li>
+  <li><strong>Withdrawn</strong> — The EIP Author(s) have withdrawn the proposed EIP.</li>
+  <li><strong>Living</strong> — Designed to be continually updated and not reach finality.</li>
+</ul>
