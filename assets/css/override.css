@@ -1270,7 +1270,9 @@ table.preamble > tbody > tr > :first-child {
   }
 }
 
-/* ----- Mobile ----- */
+/* ===========================================================
+   Mobile (< 768px) & Small devices (< 480px)
+   =========================================================== */
 
 @media (max-width: 768px) {
   .wrapper {
@@ -1278,40 +1280,72 @@ table.preamble > tbody > tr > :first-child {
   }
 
   .page-content {
-    padding: 1.25rem 0 2.5rem;
+    padding: 1rem 0 2rem;
   }
 
-  h1 { font-size: 1.625rem; }
-  h2 { font-size: 1.25rem; margin-top: 2rem; }
+  /* Typography scale */
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; margin-top: 1.75rem; }
+  h3 { font-size: 1rem; }
+  p { font-size: 0.9rem; }
 
+  /* ----- Header / Nav ----- */
   .site-header__top {
-    padding: 0.625rem 0;
+    padding: 0.5rem 0;
+    gap: 0.5rem;
+  }
+
+  .site-title {
+    font-size: 0.9rem;
+  }
+
+  .site-title::before {
+    width: 6px;
+    height: 6px;
   }
 
   .menu-icon {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem;
+  }
+
+  .eip-theme-toggle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .eip-theme-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Mobile dropdown nav */
+  .site-nav {
+    position: static;
   }
 
   .site-nav .trigger {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
     right: 0;
+    bottom: 0;
     background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-md);
-    padding: 0.75rem;
+    padding: 5rem 1.5rem 1.5rem;
     flex-direction: column;
     gap: 0.25rem;
-    z-index: 100;
-    animation: mobile-nav-in 0.2s ease;
+    z-index: 1000;
+    overflow-y: auto;
+    animation: mobile-nav-in 0.25s ease;
   }
 
   @keyframes mobile-nav-in {
     from {
       opacity: 0;
-      transform: translateY(-8px);
+      transform: translateY(-12px);
     }
     to {
       opacity: 1;
@@ -1319,64 +1353,342 @@ table.preamble > tbody > tr > :first-child {
     }
   }
 
-  .nav-trigger:checked ~ .trigger,
-  .nav-trigger:checked ~ .menu-icon ~ .trigger {
-    display: flex;
+  /* Close button for mobile nav */
+  .nav-trigger:checked ~ .trigger::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: -1;
   }
 
-  /* Alternative: use JS for toggle */
-  .site-nav .trigger.is-open {
+  .nav-trigger:checked ~ .menu-icon {
+    position: relative;
+    z-index: 1001;
+  }
+
+  .nav-trigger:checked ~ .trigger {
     display: flex;
   }
 
   .site-nav .page-link {
-    padding: 0.5rem 0.75rem;
+    padding: 0.6rem 0.75rem;
     width: 100%;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
+    border-radius: var(--radius-sm);
+    border-bottom: 1px solid var(--color-border-light);
   }
 
-  /* Hero mobile */
+  .site-nav .page-link:last-child {
+    border-bottom: none;
+  }
+
+  /* Search in header */
+  #eip-search-container {
+    margin: 0 0 0.5rem;
+  }
+
+  .eip-search__input {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem 0.5rem 2rem;
+  }
+
+  .eip-search__icon {
+    left: 10px;
+    width: 14px;
+    height: 14px;
+  }
+
+  .eip-search__results {
+    max-height: 60vh;
+    position: fixed;
+    top: auto;
+    left: 0.5rem;
+    right: 0.5rem;
+    border-radius: var(--radius-md);
+  }
+
+  /* ----- Homepage Hero ----- */
   .eip-hero {
-    padding: 2.5rem 0 1.5rem;
+    padding: 2rem 0 1.25rem;
+  }
+
+  .eip-hero__title {
+    font-size: 1.6rem;
+  }
+
+  .eip-hero__subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
   }
 
   .eip-hero__stats {
-    gap: 1.5rem;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   .eip-hero__stat-number {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
-  .eip-categories {
-    grid-template-columns: 1fr;
+  .eip-hero__stat-label {
+    font-size: 0.68rem;
   }
 
-  /* EIP rows */
-  .eip-row {
+  .eip-hero__cta {
+    font-size: 0.82rem;
+    padding: 0.65rem 1.25rem;
+  }
+
+  .eip-hero::before {
+    width: 400px;
+    height: 400px;
+  }
+
+  /* ----- Tables (homepage category table, etc.) ----- */
+  .page-content table {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.8rem;
+  }
+
+  .page-content table th,
+  .page-content table td {
+    padding: 0.5rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .page-content table th {
+    font-size: 0.72rem;
+  }
+
+  /* Make second+ columns in tables compact on small screens */
+  .page-content table td:nth-child(n+2) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ----- EIP Listing (eip-row cards) ----- */
+  .eip-status-section {
+    margin-bottom: 1.25rem;
+  }
+
+  .eip-status-section__header {
     flex-wrap: wrap;
+    padding: 0.5rem 0;
     gap: 0.5rem;
-    padding: 0.625rem 0.75rem;
+  }
+
+  .eip-status-section__title {
+    font-size: 0.9rem;
+  }
+
+  .eip-status-section__count {
+    font-size: 0.68rem;
+  }
+
+  .eip-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-sm);
   }
 
   .eip-row__number {
-    font-size: 0.75rem;
-    min-width: auto;
+    font-size: 0.72rem;
+    min-width: 3.8rem;
+    flex-shrink: 0;
   }
 
   .eip-row__title {
-    font-size: 0.8125rem;
+    font-size: 0.8rem;
     white-space: normal;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .eip-row__author {
     display: none;
   }
 
-  .eip-status-section__header {
-    flex-wrap: wrap;
+  .eip-row__date {
+    font-size: 0.68rem;
+  }
+
+  /* ----- EIP Detail Page ----- */
+  .home .page-heading {
+    font-size: 1.35rem;
+    margin: 0.5rem 0;
+  }
+
+  .home h1 {
+    font-size: 1.35rem;
+  }
+
+  .home h1 a {
+    height: 1em;
+  }
+
+  .home .badge {
+    font-size: 0.68rem;
+    padding: 0.25em 0.45em;
+    margin-bottom: 0.25rem;
+  }
+
+  .toc {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .toc li {
+    font-size: 0.75rem;
+  }
+
+  /* preamble table on EIP detail page */
+  table.preamble th,
+  table.preamble td {
+    display: block;
+    width: 100% !important;
+    padding: 0.3rem 0.5rem;
+    border: none;
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  table.preamble th {
+    padding-bottom: 0;
+    font-size: 0.68rem;
+  }
+
+  table.preamble td {
+    padding-top: 0.1rem;
+    font-size: 0.82rem;
+  }
+
+  table.preamble > tbody > tr > :first-child {
+    white-space: normal;
+  }
+
+  /* Code blocks */
+  pre {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Inline SVGs */
+  .inline-svg {
+    width: 1em;
+    height: 1em;
+  }
+
+  /* ----- Search Page ----- */
+  .eip-search-page__input {
+    font-size: 0.95rem;
+    padding: 12px 14px 12px 40px;
+  }
+
+  .eip-search-page #eip-search-page-results .eip-search__result {
+    padding: 10px 12px;
+  }
+
+  .eip-search-page__filter-label {
+    font-size: 0.7rem;
+  }
+
+  .eip-search-page__filter-chip {
+    font-size: 0.72rem;
+    padding: 3px 10px;
+  }
+
+  .eip-search-page__author-input {
+    min-width: 120px;
+    font-size: 0.75rem;
+  }
+
+  .eip-search-page__page-btn {
+    min-width: 32px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+
+  /* ----- Footer ----- */
+  .site-footer {
+    padding: 1.25rem 0;
+  }
+
+  .site-footer .wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .footer-col-wrapper > div {
+    justify-content: center;
+  }
+
+  .footer-col-wrapper {
+    font-size: 0.75rem;
+  }
+
+  /* Section spacing */
+  .section-heading {
+    font-size: 1.1rem;
+    margin-top: 1.75rem;
+  }
+
+  hr {
+    margin: 1.25rem 0;
   }
 }
+
+/* Extra small devices (< 480px) */
+@media (max-width: 480px) {
+  .wrapper {
+    padding: 0 0.75rem;
+  }
+
+  .eip-hero__stats {
+    gap: 0.75rem;
+  }
+
+  .eip-hero__stat-number {
+    font-size: 1.1rem;
+  }
+
+  .eip-hero__stat-label {
+    font-size: 0.62rem;
+  }
+
+  .eip-row__number {
+    min-width: 3rem;
+    font-size: 0.68rem;
+  }
+
+  .eip-row__title {
+    font-size: 0.75rem;
+  }
+
+  table.preamble td {
+    font-size: 0.75rem;
+  }
+
+  .eip-search__results {
+    left: 0.25rem;
+    right: 0.25rem;
+  }
+}
+
+
 
 /* -------------------------------------------------------
    Dark Mode (via data-theme attribute, set by JS in head)

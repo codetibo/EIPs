@@ -144,6 +144,13 @@
           e.preventDefault();
           trigger.checked = !trigger.checked;
         });
+        // Close mobile nav when a link is clicked
+        var navLinks = document.querySelectorAll('.trigger .page-link');
+        for (var nl = 0; nl < navLinks.length; nl++) {
+          navLinks[nl].addEventListener('click', function() {
+            trigger.checked = false;
+          });
+        }
       }
 
       // Theme toggle
