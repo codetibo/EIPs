@@ -948,14 +948,16 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 
 /* Individual EIP row card */
 .eip-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.5rem 1rem;
+  align-items: start;
   padding: 0.75rem 1rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   margin-bottom: 0.5rem;
+  min-height: 3rem;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
   text-decoration: none !important;
   color: inherit !important;
@@ -969,20 +971,19 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 
 .eip-row__number {
   align-self: center;
+  grid-column: 1;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-accent);
   white-space: nowrap;
   min-width: 5rem;
-  flex-shrink: 0;
   line-height: 1.4;
 }
 
 .eip-row__title {
   display: block;
-  flex: 1;
-  min-width: 0;
+  grid-column: 2;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text);
@@ -991,11 +992,12 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
   word-break: break-word;
   hyphens: auto;
   padding: 0.2rem 0;
+  min-width: 0;
 }
 
 .eip-row__author {
   display: none;
-  flex-shrink: 0;
+  grid-column: 3;
   font-size: 0.75rem;
   color: var(--color-text-tertiary);
   max-width: 240px;
@@ -1003,7 +1005,8 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
   white-space: normal;
   word-break: break-word;
   hyphens: auto;
-  padding: 0.15rem 0;
+  padding: 0.2rem 0;
+  min-width: 0;
 }
 
 @media (min-width: 640px) {
@@ -1014,15 +1017,15 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 
 .eip-row__status {
   align-self: center;
-  flex-shrink: 0;
+  grid-column: 4;
 }
 
 .eip-row__date {
-  align-self: center;
-  flex-shrink: 0;
+  grid-column: 1 / -1;
   font-size: 0.75rem;
   color: var(--color-text-tertiary);
   font-family: var(--font-mono);
+  padding-top: 0.1rem;
 }
 
 /* Status badges */
@@ -2085,27 +2088,26 @@ html[data-theme="dark"] .eip-scroll-top {
   }
 
   .eip-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 0.1rem;
     padding: 0.6rem 0.75rem;
     border-radius: var(--radius-sm);
+    min-height: 2.5rem;
   }
 
   .eip-row__number {
-    align-self: flex-start;
+    grid-column: 1;
     font-size: 0.68rem;
     min-width: auto;
     color: var(--color-text-tertiary);
     letter-spacing: 0.03em;
+    white-space: nowrap;
   }
 
   .eip-row__title {
-    display: block;
+    grid-column: 1;
     font-size: 0.85rem;
-    white-space: normal;
     line-height: 1.35;
-    word-break: break-word;
-    hyphens: auto;
     padding: 0.1rem 0;
   }
 
@@ -2114,13 +2116,14 @@ html[data-theme="dark"] .eip-scroll-top {
   }
 
   .eip-row__status {
-    align-self: flex-start;
+    grid-column: 1;
+    justify-self: start;
   }
 
   .eip-row__date {
-    align-self: flex-start;
+    grid-column: 1;
     font-size: 0.65rem;
-    margin-top: 0.05rem;
+    padding: 0;
   }
 
   /* ----- EIP Detail Page ----- */
