@@ -1,136 +1,230 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var container = document.getElementById('eip-listing-container');
-    var paginationEl = document.getElementById('eip-listing-pagination');
-    if (!container || !paginationEl) return;
+    var controlsEl = document.getElementById('eip-listing-pagination');
+    if (!container || !controlsEl) return;
 
     var params = new URLSearchParams(window.location.search);
-    var currentPage = parseInt(params.get('page'), 10) || 1;
-    if (currentPage < 1) currentPage = 1;
-
-    var perPage = parseInt(params.get('per_page'), 10) || 100;
+    var batchSize = parseInt(params.get('per_page'), 10) || 25;
     var validSizes = [25, 50, 100];
-    if (validSizes.indexOf(perPage) === -1) perPage = 100;
-    var sections = container.querySelectorAll('.eip-status-section');
+    if (validSizes.indexOf(batchSize) === -1) batchSize = 25;
+
     var allRows = container.querySelectorAll('.eip-row');
     var totalRows = allRows.length;
-    var totalPages = Math.max(1, Math.ceil(totalRows / perPage));
-    if (currentPage > totalPages) currentPage = totalPages;
+    var loadedCount = 0;
+    var isLoading = false;
+    var isComplete = false;
+    var observer = null;
 
-    function showPage(page) {
-      var start = (page - 1) * perPage;
-      var end = start + perPage;
+    // Hide all rows initially
+    for (var i = 0; i < allRows.length; i++) {
+      allRows[i].style.display = 'none';
+    }
+
+    function showRows(start, count) {
+      var end = Math.min(start + count, totalRows);
+      for (var i = start; i < end; i++) {
+        allRows[i].style.display = '';
+      }
+      loadedCount = end;
+      updateCounter();
+
+      // Handle section headers — hide sections with no visible rows
+      var sections = container.querySelectorAll('.eip-status-section');
       var rowIndex = 0;
-
       for (var s = 0; s < sections.length; s++) {
         var sectionRows = sections[s].querySelectorAll('.eip-row');
         var anyVisible = false;
-
         for (var r = 0; r < sectionRows.length; r++) {
-          if (rowIndex >= start && rowIndex < end) {
-            sectionRows[r].style.display = '';
+          if (rowIndex < loadedCount) {
             anyVisible = true;
-          } else {
-            sectionRows[r].style.display = 'none';
           }
           rowIndex++;
         }
-
         sections[s].style.display = anyVisible ? '' : 'none';
       }
 
-      renderPagination(page);
-      updateUrl(page);
-      window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
+      if (loadedCount >= totalRows) {
+        isComplete = true;
+        showComplete();
+      }
     }
 
-    function renderPagination(page) {
+    function loadNextBatch() {
+      if (isLoading || isComplete) return;
+      isLoading = true;
+      showLoader();
+
+      // Use requestAnimationFrame for smooth reveal
+      requestAnimationFrame(function() {
+        showRows(loadedCount, batchSize);
+
+        // If after loading we still haven't filled the viewport, load more
+        var sentinel = document.getElementById('eip-infinite-sentinel');
+        if (sentinel && !isComplete) {
+          var sentinelRect = sentinel.getBoundingClientRect();
+          if (sentinelRect.top < window.innerHeight + 200) {
+            // Still need more to fill the viewport
+            isLoading = false;
+            loadNextBatch();
+            return;
+          }
+        }
+
+        isLoading = false;
+        hideLoader();
+      });
+    }
+
+    function resetInfinite() {
+      // Hide all rows
+      for (var i = 0; i < allRows.length; i++) {
+        allRows[i].style.display = 'none';
+      }
+      loadedCount = 0;
+      isComplete = false;
+
+      // Show section headers as we go
+      var sections = container.querySelectorAll('.eip-status-section');
+      for (var s = 0; s < sections.length; s++) {
+        sections[s].style.display = 'none';
+      }
+
+      showRows(0, batchSize);
+      updateUrl();
+
+      // After first batch, check if more are needed to fill viewport
+      requestAnimationFrame(function() {
+        var sentinel = document.getElementById('eip-infinite-sentinel');
+        if (sentinel && !isComplete) {
+          var sentinelRect = sentinel.getBoundingClientRect();
+          if (sentinelRect.top < window.innerHeight + 200) {
+            loadNextBatch();
+          }
+        }
+      });
+    }
+
+    function setupObserver() {
+      var sentinel = document.getElementById('eip-infinite-sentinel');
+      if (!sentinel) return;
+
+      if (observer) observer.disconnect();
+
+      observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isLoading && !isComplete) {
+            loadNextBatch();
+          }
+        });
+      }, { rootMargin: '200px' });
+
+      observer.observe(sentinel);
+    }
+
+    function renderControls() {
       var html = '';
 
-      if (page > 1) {
-        html += '<button class="eip-listing-pagination__btn" data-page="' + (page - 1) + '">&larr; Prev</button>';
-      } else {
-        html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--disabled" disabled>&larr; Prev</button>';
-      }
-
-      var maxVisiblePages = 7;
-      var startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
-      var endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-      if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-      }
-
-      if (startPage > 1) {
-        html += '<button class="eip-listing-pagination__btn" data-page="1">1</button>';
-        if (startPage > 2) html += '<span class="eip-listing-pagination__dots">&hellip;</span>';
-      }
-
-      for (var p = startPage; p <= endPage; p++) {
-        if (p === page) {
-          html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--active">' + p + '</button>';
-        } else {
-          html += '<button class="eip-listing-pagination__btn" data-page="' + p + '">' + p + '</button>';
-        }
-      }
-
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) html += '<span class="eip-listing-pagination__dots">&hellip;</span>';
-        html += '<button class="eip-listing-pagination__btn" data-page="' + totalPages + '">' + totalPages + '</button>';
-      }
-
-      if (page < totalPages) {
-        html += '<button class="eip-listing-pagination__btn" data-page="' + (page + 1) + '">Next &rarr;</button>';
-      } else {
-        html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--disabled" disabled>Next &rarr;</button>';
-      }
-
-      html += '<span class="eip-listing-pagination__info">' + totalRows + ' total</span>';
+      // Counter showing how many are loaded
+      html += '<span class="eip-infinite__counter" id="eip-infinite-counter">Showing 0 of ' + totalRows + '</span>';
 
       // Page size selector
-      html += '<span class="eip-listing-pagination__size-label">per page:</span>';
-      html += '<select class="eip-listing-pagination__size-select" aria-label="Results per page">';
+      html += '<span class="eip-infinite__size-label">per page:</span>';
+      html += '<select class="eip-infinite__size-select" aria-label="Batch size">';
       for (var si = 0; si < validSizes.length; si++) {
         var v = validSizes[si];
-        html += '<option value="' + v + '"' + (v === perPage ? ' selected' : '') + '>' + v + '</option>';
+        html += '<option value="' + v + '"' + (v === batchSize ? ' selected' : '') + '>' + v + '</option>';
       }
       html += '</select>';
 
-      paginationEl.innerHTML = html;
-
-      var btns = paginationEl.querySelectorAll('[data-page]');
-      for (var b = 0; b < btns.length; b++) {
-        btns[b].addEventListener('click', function() {
-          showPage(parseInt(this.getAttribute('data-page'), 10));
-        });
-      }
+      controlsEl.innerHTML = html;
 
       // Page size select handler
-      var sizeSelect = paginationEl.querySelector('.eip-listing-pagination__size-select');
+      var sizeSelect = controlsEl.querySelector('.eip-infinite__size-select');
       if (sizeSelect) {
         sizeSelect.addEventListener('change', function() {
-          perPage = parseInt(this.value, 10);
-          totalPages = Math.max(1, Math.ceil(totalRows / perPage));
-          currentPage = 1;
-          showPage(1);
+          batchSize = parseInt(this.value, 10);
+          resetInfinite();
         });
       }
     }
 
-    function updateUrl(page) {
-      var url = new URL(window.location);
-      if (page > 1) {
-        url.searchParams.set('page', page);
-      } else {
-        url.searchParams.delete('page');
+    function updateCounter() {
+      var counter = document.getElementById('eip-infinite-counter');
+      if (counter) {
+        counter.textContent = 'Showing ' + loadedCount + ' of ' + totalRows;
       }
-      if (perPage !== 100) {
-        url.searchParams.set('per_page', perPage);
+    }
+
+    function updateUrl() {
+      var url = new URL(window.location);
+      if (batchSize !== 25) {
+        url.searchParams.set('per_page', batchSize);
       } else {
         url.searchParams.delete('per_page');
       }
-      window.history.replaceState({ page: page, perPage: perPage }, '', url.toString());
+      window.history.replaceState({ perPage: batchSize }, '', url.toString());
     }
 
-    showPage(currentPage);
+    // Sentinel element for intersection observer
+    var sentinel = document.createElement('div');
+    sentinel.id = 'eip-infinite-sentinel';
+    sentinel.className = 'eip-infinite__sentinel';
+    sentinel.innerHTML = '<div class="eip-infinite__loader"><span class="eip-infinite__spinner"></span> Loading more...</div>';
+    controlsEl.parentNode.insertBefore(sentinel, controlsEl.nextSibling);
+
+    // Show loader function
+    function showLoader() {
+      var loader = sentinel.querySelector('.eip-infinite__loader');
+      if (loader) loader.style.display = '';
+    }
+
+    function hideLoader() {
+      var loader = sentinel.querySelector('.eip-infinite__loader');
+      if (loader && !isComplete) loader.style.display = 'none';
+    }
+
+    function showComplete() {
+      var loader = sentinel.querySelector('.eip-infinite__loader');
+      if (loader) {
+        loader.innerHTML = 'All ' + totalRows + ' EIPs loaded';
+        loader.className = 'eip-infinite__complete';
+      }
+    }
+
+    renderControls();
+    resetInfinite();
+    setupObserver();
+
+    // Listen for scroll events to fill viewport
+    var scrollTimer = null;
+    window.addEventListener('scroll', function() {
+      if (scrollTimer) clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(function() {
+        if (!isComplete && !isLoading) {
+          var sentinelEl = document.getElementById('eip-infinite-sentinel');
+          if (sentinelEl) {
+            var rect = sentinelEl.getBoundingClientRect();
+            if (rect.top < window.innerHeight + 400) {
+              loadNextBatch();
+            }
+          }
+        }
+      }, 100);
+    }, { passive: true });
+
+    // Handle initial load — fill viewport
+    requestAnimationFrame(function fillViewport() {
+      if (!isComplete && !isLoading) {
+        var sentinelEl = document.getElementById('eip-infinite-sentinel');
+        if (sentinelEl) {
+          var rect = sentinelEl.getBoundingClientRect();
+          if (rect.top < window.innerHeight + 400) {
+            loadNextBatch();
+            requestAnimationFrame(fillViewport);
+          }
+        }
+      }
+    });
   });
 </script>
