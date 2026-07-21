@@ -4,4 +4,9 @@ title: Networking
 ---
 
 {% assign eips=site.pages|where:"type","Standards Track"|where:"category","Networking"|where_exp:"page","page.url contains '/EIPS/'" %}
-{% include eiptable.html eips=eips %}
+<div id="eip-listing-container">
+  {% include eiptable.html eips=eips %}
+</div>
+<div id="eip-listing-pagination" class="eip-listing-pagination"></div>
+
+{% include listing-pagination.html %}
