@@ -2095,10 +2095,8 @@ html[data-theme="dark"] .eip-scroll-top {
     font-size: 0.85rem;
     white-space: normal;
     line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    word-break: break-word;
+    hyphens: auto;
   }
 
   .eip-row__author {
