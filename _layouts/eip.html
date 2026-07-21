@@ -128,20 +128,32 @@ layout: default
     </div>
   {% endif %}
 
-  <div class="toc">
-    <h2>Table of Contents</h2>
-    {% include toc.html html=content sanitize=true h_max=3 %}
-  </div>
+  <div class="eip-layout">
+    <div class="eip-layout__content">
+      <div class="toc toc--inline">
+        <h2>Table of Contents</h2>
+        {% include toc.html html=content sanitize=true h_max=3 %}
+      </div>
 
-  {% include anchor_headings.html html=content anchorClass="anchor-link" beforeHeading=true %}
+      {% include anchor_headings.html html=content anchorClass="anchor-link" beforeHeading=true %}
 
-  <h2>Citation</h2>
+      <h2>Citation</h2>
   <p>Please cite this document as:</p>
   {% comment %}
   IEEE specification for reference formatting:
   https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf
   {% endcomment %}
   <p>{% include authorlist.html authors=page.author %}, "{{ doc_title }}," <em>Ethereum Improvement Proposals</em>, no. {{ page.eip | xml_escape }}, {{ page.created | date: "%B %Y" }}. Available: https://eips.ethereum.org/EIPS/eip-{{ page.eip | xml_escape }}.</p>
+</div>
+
+<div class="eip-layout__sidebar">
+  <div class="eip-layout__toc" id="eip-sticky-toc">
+    <div class="eip-layout__toc-inner">
+      <h2 class="eip-layout__toc-heading">On this page</h2>
+      {% include toc.html html=content sanitize=true h_max=3 %}
+    </div>
+  </div>
+</div>
 </div>
 {% comment %}
 Article schema specification:

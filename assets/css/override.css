@@ -1050,6 +1050,121 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 
 /* ----- EIP Detail Page ----- */
 
+/* ----- EIP Layout (content + sticky sidebar TOC) ----- */
+
+.eip-layout {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.eip-layout__content {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.eip-layout__sidebar {
+  display: none;
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 5.5rem;
+  max-height: calc(100vh - 6.5rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 1024px) {
+  .eip-layout__sidebar {
+    display: block;
+  }
+}
+
+.eip-layout__toc {
+  border-left: 2px solid var(--color-border);
+  padding-left: 1rem;
+}
+
+.eip-layout__toc-heading {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.eip-layout__toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.eip-layout__toc ul ul {
+  padding-left: 0.875rem;
+  margin-top: 0.125rem;
+}
+
+.eip-layout__toc li {
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.eip-layout__toc a {
+  color: var(--color-text-tertiary);
+  text-decoration: none !important;
+  display: block;
+  padding: 0.2rem 0;
+  border-left: 2px solid transparent;
+  margin-left: -1rem;
+  padding-left: 1rem;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.eip-layout__toc a:hover {
+  color: var(--color-text-secondary);
+}
+
+/* Active TOC link (highlighted via JS) */
+.eip-layout__toc a.eip-toc--active {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* Hide the inline TOC on large screens where sidebar is visible */
+@media (min-width: 1024px) {
+  .toc--inline {
+    display: none;
+  }
+}
+
+html[data-theme="dark"] .eip-layout__toc a {
+  color: var(--color-text-tertiary);
+}
+
+html[data-theme="dark"] .eip-layout__toc a:hover {
+  color: var(--color-text-secondary);
+}
+
+html[data-theme="dark"] .eip-layout__toc a.eip-toc--active {
+  color: var(--color-accent);
+}
+
+html[data-theme="dark"] .eip-layout__toc {
+  border-left-color: var(--color-border);
+}
+
+html[data-theme="dark"] .eip-layout__toc-heading {
+  color: var(--color-text-tertiary);
+}
+
+/* ----- EIP Detail Page ----- */
+
 .home {
   max-width: 100%;
   overflow-x: hidden;
