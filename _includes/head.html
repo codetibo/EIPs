@@ -164,6 +164,29 @@
           localStorage.setItem('eip-theme', next);
         });
       }
+
+      // Scroll-to-top button (create element + attach behavior)
+      (function() {
+        var btn = document.createElement('button');
+        btn.className = 'eip-scroll-top';
+        btn.setAttribute('aria-label', 'Scroll to top');
+        btn.setAttribute('type', 'button');
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>';
+        document.body.appendChild(btn);
+
+        var throttleTimer = null;
+        window.addEventListener('scroll', function() {
+          if (throttleTimer) return;
+          throttleTimer = setTimeout(function() {
+            btn.classList.toggle('eip-scroll-top--visible', window.scrollY > 300);
+            throttleTimer = null;
+          }, 100);
+        });
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      })();
     });
   </script>
 </head>
