@@ -154,6 +154,7 @@
       if (counter) {
         counter.textContent = 'Showing ' + loadedCount + ' of ' + totalRows;
       }
+      updateLoadMoreCount();
     }
 
     function updateUrl() {
@@ -170,29 +171,65 @@
     var sentinel = document.createElement('div');
     sentinel.id = 'eip-infinite-sentinel';
     sentinel.className = 'eip-infinite__sentinel';
-    sentinel.innerHTML = '<div class="eip-infinite__loader"><span class="eip-infinite__spinner"></span> Loading more...</div>';
+    sentinel.innerHTML = '' +
+      '<div class="eip-infinite__loader"><span class="eip-infinite__spinner"></span> Loading more...</div>' +
+      '<button class="eip-infinite__load-more" id="eip-load-more-btn">Load more <span class="eip-infinite__load-more-count" id="eip-load-more-count"></span></button>' +
+      '<div class="eip-infinite__complete">&#10003; All ' + totalRows + ' EIPs loaded</div>';
     controlsEl.parentNode.insertBefore(sentinel, controlsEl.nextSibling);
+
+    // Update remaining count on the load-more button
+    function updateLoadMoreCount() {
+      var countEl = document.getElementById('eip-load-more-count');
+      var btn = document.getElementById('eip-load-more-btn');
+      if (!countEl || !btn) return;
+      var remaining = totalRows - loadedCount;
+      if (remaining > 0 && !isComplete) {
+        countEl.textContent = '(' + remaining + ' more)';
+        countEl.style.display = '';
+        btn.style.display = '';
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+
+    // Bind click handler for the load-more button
+    function setupLoadMoreButton() {
+      var btn = document.getElementById('eip-load-more-btn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          loadNextBatch();
+        });
+      }
+    }
 
     // Show loader function
     function showLoader() {
       var loader = sentinel.querySelector('.eip-infinite__loader');
+      var btn = document.getElementById('eip-load-more-btn');
       if (loader) loader.style.display = '';
+      if (btn) btn.style.display = 'none';
     }
 
     function hideLoader() {
       var loader = sentinel.querySelector('.eip-infinite__loader');
       if (loader && !isComplete) loader.style.display = 'none';
+      // Show the load-more button again after loading finishes, if there's more
+      if (!isComplete) {
+        updateLoadMoreCount();
+      }
     }
 
     function showComplete() {
       var loader = sentinel.querySelector('.eip-infinite__loader');
-      if (loader) {
-        loader.innerHTML = 'All ' + totalRows + ' EIPs loaded';
-        loader.className = 'eip-infinite__complete';
-      }
+      var btn = document.getElementById('eip-load-more-btn');
+      var complete = sentinel.querySelector('.eip-infinite__complete');
+      if (loader) loader.style.display = 'none';
+      if (btn) btn.style.display = 'none';
+      if (complete) complete.style.display = '';
     }
 
     renderControls();
+    setupLoadMoreButton();
     resetInfinite();
     setupObserver();
 
