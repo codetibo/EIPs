@@ -239,6 +239,19 @@ table tr:nth-child(2n) {
   background: var(--color-bg);
 }
 
+/* Subtle hover on EIP listing table rows */
+table.eiptable tbody tr {
+  transition: background var(--transition-fast);
+}
+
+table.eiptable tbody tr:hover {
+  background: var(--color-accent-soft);
+}
+
+table.eiptable tbody tr:nth-child(2n):hover {
+  background: var(--color-accent-soft);
+}
+
 /* ----- Wrapper & Page Content ----- */
 
 .wrapper {
@@ -1574,7 +1587,7 @@ html[data-theme="dark"] .eip-scroll-top {
     height: 400px;
   }
 
-  /* ----- Tables (homepage category table, etc.) ----- */
+  /* ----- Tables (homepage category table, EIP listing, etc.) ----- */
   .page-content table {
     display: block;
     width: 100% !important;
@@ -1586,18 +1599,48 @@ html[data-theme="dark"] .eip-scroll-top {
   .page-content table th,
   .page-content table td {
     padding: 0.5rem 0.5rem;
-    white-space: nowrap;
   }
 
   .page-content table th {
     font-size: 0.72rem;
   }
 
-  /* Make second+ columns in tables compact on small screens */
-  .page-content table td:nth-child(n+2) {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  /* EIP number stays nowrap; title and author can wrap */
+  table.eiptable td.eipnum {
+    white-space: nowrap;
+  }
+
+  table.eiptable td.title,
+  table.eiptable td.author {
+    white-space: normal;
+    word-break: break-word;
+    min-width: 120px;
+  }
+
+  table.eiptable td.author {
+    font-size: 0.75rem;
+  }
+
+  /* Scrollable table hint */
+  .page-content table.eiptable {
+    position: relative;
+  }
+
+  .page-content table.eiptable::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 24px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.04));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .page-content table.eiptable:not(:hover)::after {
+    opacity: 1;
   }
 
   /* ----- EIP Detail Page ----- */
@@ -1876,6 +1919,14 @@ html[data-theme="dark"] table td {
 
 html[data-theme="dark"] table tr:nth-child(2n) {
   background: var(--color-bg);
+}
+
+html[data-theme="dark"] table.eiptable tbody tr:hover {
+  background: var(--color-accent-soft);
+}
+
+html[data-theme="dark"] table.eiptable tbody tr:nth-child(2n):hover {
+  background: var(--color-accent-soft);
 }
 
 html[data-theme="dark"] .toc {
