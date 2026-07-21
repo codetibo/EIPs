@@ -2022,6 +2022,7 @@ html[data-theme="dark"] .eip-hero::before {
 
 html[data-theme="dark"] code {
   background: var(--color-border-light);
+  border: 0.5px solid #1a1a28;
   color: var(--color-text);
 }
 
