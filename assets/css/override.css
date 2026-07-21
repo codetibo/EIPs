@@ -1163,6 +1163,48 @@ html[data-theme="dark"] .eip-layout__toc-heading {
   color: var(--color-text-tertiary);
 }
 
+/* Back-to-top links next to headings */
+.eip-back-to-top {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary) !important;
+  text-decoration: none !important;
+  opacity: 0;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  white-space: nowrap;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
+
+a.eip-back-to-top:hover {
+  color: var(--color-accent) !important;
+  opacity: 1 !important;
+}
+
+h2:hover .eip-back-to-top,
+h3:hover .eip-back-to-top,
+h2:focus-within .eip-back-to-top,
+h3:focus-within .eip-back-to-top {
+  opacity: 0.6;
+}
+
+@media (hover: none) {
+  .eip-back-to-top {
+    opacity: 0.5;
+    font-size: 0.65rem;
+  }
+}
+
+html[data-theme="dark"] .eip-back-to-top {
+  color: var(--color-text-tertiary) !important;
+}
+
+html[data-theme="dark"] a.eip-back-to-top:hover {
+  color: var(--color-accent) !important;
+}
+
 /* ----- EIP Detail Page ----- */
 
 .home {

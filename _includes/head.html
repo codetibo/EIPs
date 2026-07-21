@@ -165,6 +165,29 @@
         });
       }
 
+      // Back-to-top links next to headings on EIP detail pages
+      (function() {
+        var ct = document.querySelector('.eip-layout__content');
+        if (!ct) return;
+        var hds = ct.querySelectorAll('h2[id], h3[id]');
+        for (var i = 0; i < hds.length; i++) {
+          var lnk = document.createElement('a');
+          lnk.className = 'eip-back-to-top';
+          lnk.href = '#';
+          lnk.setAttribute('aria-label', 'Back to top');
+          lnk.innerHTML = '&nbsp;\u2191 back to top';
+          hds[i].appendChild(lnk);
+        }
+        // Bind click via delegation so links work after creation
+        ct.addEventListener('click', function(e) {
+          var t = e.target;
+          if (t.classList && t.classList.contains('eip-back-to-top')) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      })();
+
       // Sticky TOC active heading tracking (EIP detail pages only)
       (function() {
         var stickyToc = document.getElementById('eip-sticky-toc');
