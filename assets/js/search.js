@@ -13,10 +13,11 @@
   /* ------------------------------------------------------------------ */
 
   var searchIndex = [];
+  var baseurl = window.EIP_BASEURL || '';
 
   function loadIndex() {
     if (searchIndex.length > 0) return;
-    fetch('/search-index.json')
+    fetch(baseurl + '/search-index.json')
       .then(function (r) { return r.json(); })
       .then(function (data) { searchIndex = data; })
       .catch(function () { /* degrade silently */ });
@@ -200,7 +201,7 @@
       for (var i = 0; i < count; i++) {
         html += resultHtml(data.results[i].doc, data.tokens);
       }
-      html += '<a href="/search/?q=' + encodeURIComponent(data.query) + '" class="eip-search__view-all">View all ' + data.results.length + ' results →</a>';
+      html += '<a href="' + baseurl + '/search/?q=' + encodeURIComponent(data.query) + '" class="eip-search__view-all">View all ' + data.results.length + ' results →</a>';
       resultsEl.innerHTML = html;
       resultsEl.classList.add('eip-search__results--visible');
     }
@@ -250,7 +251,7 @@
       if (e.key === 'Enter') {
         var q = this.value.trim();
         if (q.length >= 2) {
-          window.location.href = '/search/?q=' + encodeURIComponent(q);
+          window.location.href = baseurl + '/search/?q=' + encodeURIComponent(q);
         }
       }
     });
@@ -426,7 +427,7 @@
       if (statusFilter) params.push('status=' + encodeURIComponent(statusFilter));
       if (typeFilter) params.push('type=' + encodeURIComponent(typeFilter));
       if (authorFilter) params.push('author=' + encodeURIComponent(authorFilter));
-      var url = '/search/' + (params.length ? '?' + params.join('&') : '');
+      var url = baseurl + '/search/' + (params.length ? '?' + params.join('&') : '');
       window.history.replaceState(null, '', url);
     }
 

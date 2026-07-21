@@ -17,9 +17,10 @@ title: Ethereum Improvement Proposals
 description: >-
   Ethereum Improvement Proposals (EIPs) describe standards for the Ethereum
   platform, such as core protocol specifications.
-url: "https://eips.ethereum.org"
-github_username:  ethereum
-repository: ethereum/EIPs
+url: "https://codetibo.github.io"
+baseurl: "/EIPs"
+github_username:  codetibo
+repository: codetibo/EIPs
 lang: en
 timezone: UTC
 
