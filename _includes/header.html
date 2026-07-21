@@ -44,7 +44,8 @@
       </button>
     </div>
 
-    {% comment %} Global Search UI {% endcomment %}
+    {% comment %} Global Search UI (hidden on the /search page itself) {% endcomment %}
+    {% if page.title != "Search" %}
     <div id="eip-search-container" class="eip-search">
       <div class="eip-search__input-wrapper">
         <svg class="eip-search__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -64,5 +65,6 @@
         <div class="eip-search__tip">Start typing to search all EIPs…</div>
       </div>
     </div>
+    {% endif %}
   </div>
 </header>
