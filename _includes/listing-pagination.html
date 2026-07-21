@@ -16,15 +16,15 @@
     var isComplete = false;
     var observer = null;
 
-    // Hide all rows initially
+    // Hide all rows initially using CSS class (preserves flex display)
     for (var i = 0; i < allRows.length; i++) {
-      allRows[i].style.display = 'none';
+      allRows[i].classList.add('eip-row--hidden');
     }
 
     function showRows(start, count) {
       var end = Math.min(start + count, totalRows);
       for (var i = start; i < end; i++) {
-        allRows[i].style.display = '';
+        allRows[i].classList.remove('eip-row--hidden');
       }
       loadedCount = end;
       updateCounter();
@@ -41,7 +41,7 @@
           }
           rowIndex++;
         }
-        sections[s].style.display = anyVisible ? '' : 'none';
+        sections[s].classList.toggle('eip-section--hidden', !anyVisible);
       }
 
       if (loadedCount >= totalRows) {
@@ -77,17 +77,17 @@
     }
 
     function resetInfinite() {
-      // Hide all rows
+      // Hide all rows using CSS class
       for (var i = 0; i < allRows.length; i++) {
-        allRows[i].style.display = 'none';
+        allRows[i].classList.add('eip-row--hidden');
       }
       loadedCount = 0;
       isComplete = false;
 
-      // Show section headers as we go
+      // Hide all section headers
       var sections = container.querySelectorAll('.eip-status-section');
       for (var s = 0; s < sections.length; s++) {
-        sections[s].style.display = 'none';
+        sections[s].classList.add('eip-section--hidden');
       }
 
       showRows(0, batchSize);

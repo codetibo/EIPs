@@ -907,6 +907,15 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 
 /* ----- EIP Listing Cards (replaces eiptable tables) ----- */
 
+/* Hide/show helpers for infinite scroll (not !important so .eip-row:hover still works) */
+.eip-row--hidden {
+  display: none;
+}
+
+.eip-section--hidden {
+  display: none;
+}
+
 .eip-status-section {
   margin-bottom: 2rem;
 }
