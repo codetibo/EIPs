@@ -1490,6 +1490,10 @@ html[data-theme="dark"] table th {
   background: var(--color-surface);
 }
 
+html[data-theme="dark"] table td {
+  color: #b8b8d0;
+}
+
 html[data-theme="dark"] table tr:nth-child(2n) {
   background: var(--color-bg);
 }
