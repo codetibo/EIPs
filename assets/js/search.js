@@ -304,6 +304,17 @@
 
     loadIndex();
 
+    // Re-run search when index finishes loading (handles race condition)
+    var indexCheckInterval = setInterval(function() {
+      if (searchIndex.length > 0) {
+        clearInterval(indexCheckInterval);
+        var q = pageInput.value.trim();
+        if (q.length >= 2) {
+          doSearchAndRender();
+        }
+      }
+    }, 100);
+
     function getParam(name) {
       var match = window.location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
       return match ? decodeURIComponent(match[1].replace(/\+/g, ' ')) : '';
@@ -397,11 +408,12 @@
     }
 
     function doSearchAndRender() {
-      lastData = search(pageInput.value);
-      if (lastData && lastData.results) {
+      var raw = search(pageInput.value);
+      var hasResults = raw && Array.isArray(raw.results);
+      if (hasResults) {
         var filtered = [];
-        for (var i = 0; i < lastData.results.length; i++) {
-          var doc = lastData.results[i].doc;
+        for (var i = 0; i < raw.results.length; i++) {
+          var doc = raw.results[i].doc;
           var keep = true;
           if (statusFilter && doc.status !== statusFilter) keep = false;
           if (typeFilter && !docMatchesType(doc)) keep = false;
@@ -409,13 +421,15 @@
             var authorStr = (doc.author || '').toLowerCase();
             if (authorStr.indexOf(authorFilter.toLowerCase()) === -1) keep = false;
           }
-          if (keep) filtered.push(lastData.results[i]);
+          if (keep) filtered.push(raw.results[i]);
         }
         lastData = {
           results: filtered,
-          tokens: lastData.tokens,
-          query: lastData.query
+          tokens: raw.tokens,
+          query: raw.query
         };
+      } else {
+        lastData = raw; // might be [] while index loads
       }
       renderPage(lastData, currentPage);
     }
@@ -432,7 +446,7 @@
     }
 
     function renderPage(data, page) {
-      if (!data || data.results.length === 0) {
+      if (!data || !data.results || data.results.length === 0) {
         var parts = [];
         if (data && data.query) parts.push('matching &quot;' + escapeHtml(data.query) + '&quot;');
         if (statusFilter) parts.push('status: &quot;' + escapeHtml(statusFilter) + '&quot;');
