@@ -8,7 +8,9 @@
     var currentPage = parseInt(params.get('page'), 10) || 1;
     if (currentPage < 1) currentPage = 1;
 
-    var perPage = 100;
+    var perPage = parseInt(params.get('per_page'), 10) || 100;
+    var validSizes = [25, 50, 100];
+    if (validSizes.indexOf(perPage) === -1) perPage = 100;
     var sections = container.querySelectorAll('.eip-status-section');
     var allRows = container.querySelectorAll('.eip-row');
     var totalRows = allRows.length;
@@ -82,13 +84,34 @@
         html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--disabled" disabled>Next &rarr;</button>';
       }
 
-      html += '<span class="eip-listing-pagination__info">' + totalRows + ' total EIPs</span>';
+      html += '<span class="eip-listing-pagination__info">' + totalRows + ' total</span>';
+
+      // Page size selector
+      html += '<span class="eip-listing-pagination__size-label">per page:</span>';
+      html += '<select class="eip-listing-pagination__size-select" aria-label="Results per page">';
+      for (var si = 0; si < validSizes.length; si++) {
+        var v = validSizes[si];
+        html += '<option value="' + v + '"' + (v === perPage ? ' selected' : '') + '>' + v + '</option>';
+      }
+      html += '</select>';
+
       paginationEl.innerHTML = html;
 
       var btns = paginationEl.querySelectorAll('[data-page]');
       for (var b = 0; b < btns.length; b++) {
         btns[b].addEventListener('click', function() {
           showPage(parseInt(this.getAttribute('data-page'), 10));
+        });
+      }
+
+      // Page size select handler
+      var sizeSelect = paginationEl.querySelector('.eip-listing-pagination__size-select');
+      if (sizeSelect) {
+        sizeSelect.addEventListener('change', function() {
+          perPage = parseInt(this.value, 10);
+          totalPages = Math.max(1, Math.ceil(totalRows / perPage));
+          currentPage = 1;
+          showPage(1);
         });
       }
     }
@@ -100,7 +123,12 @@
       } else {
         url.searchParams.delete('page');
       }
-      window.history.replaceState({ page: page }, '', url.toString());
+      if (perPage !== 100) {
+        url.searchParams.set('per_page', perPage);
+      } else {
+        url.searchParams.delete('per_page');
+      }
+      window.history.replaceState({ page: page, perPage: perPage }, '', url.toString());
     }
 
     showPage(currentPage);

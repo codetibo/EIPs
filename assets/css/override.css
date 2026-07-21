@@ -1468,6 +1468,68 @@ table.preamble > tbody > tr > :first-child {
   color: var(--color-text-tertiary);
 }
 
+.eip-listing-pagination__size-label {
+  margin-left: 0.75rem;
+  font-size: 0.72rem;
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.eip-listing-pagination__size-select {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239a9aab' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 22px;
+}
+
+.eip-listing-pagination__size-select:hover {
+  border-color: var(--color-accent-light);
+}
+
+.eip-listing-pagination__size-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(79, 110, 247, 0.12);
+}
+
+html[data-theme="dark"] .eip-listing-pagination__size-label {
+  color: var(--color-text-tertiary);
+}
+
+html[data-theme="dark"] .eip-listing-pagination__size-select {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%235c5c72' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+html[data-theme="dark"] .eip-listing-pagination__size-select:hover {
+  border-color: var(--color-accent-light);
+}
+
+html[data-theme="dark"] .eip-listing-pagination__size-select:focus {
+  border-color: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .eip-listing-pagination__size-label,
+  .eip-listing-pagination__size-select {
+    display: none;
+  }
+}
+
 html[data-theme="dark"] .eip-listing-pagination__btn {
   background: var(--color-surface);
   border-color: var(--color-border);
