@@ -31,8 +31,10 @@ title: Home
       <span class="eip-hero__stat-number">{{ site.pages | where: "status", "Living" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</span>
       <span class="eip-hero__stat-label">Living</span>
     </div>
+    {% assign in_progress_eips = site.pages | where_exp: "page", "page.url contains '/EIPS/'" %}
+    {% assign in_progress_count = in_progress_eips | where: "status", "Draft" | size | plus: (in_progress_eips | where: "status", "Review" | size) | plus: (in_progress_eips | where: "status", "Last Call" | size) %}
     <div class="eip-hero__stat">
-      <span class="eip-hero__stat-number">{{ site.pages | where_exp: "page", "page.status == 'Draft' or page.status == 'Review' or page.status == 'Last Call'" | where_exp: "page", "page.url contains '/EIPS/'" | size }}</span>
+      <span class="eip-hero__stat-number">{{ in_progress_count }}</span>
       <span class="eip-hero__stat-label">In Progress</span>
     </div>
   </div>
