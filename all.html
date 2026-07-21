@@ -4,4 +4,123 @@ title: All
 ---
 
 {% assign eips=site.pages|where_exp:"page","page.url contains '/EIPS/'" %}
-{% include eiptable.html eips=eips %}
+<div id="eip-listing-container">
+  {% include eiptable.html eips=eips %}
+</div>
+<div id="eip-listing-pagination" class="eip-listing-pagination"></div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var container = document.getElementById('eip-listing-container');
+    var paginationEl = document.getElementById('eip-listing-pagination');
+    if (!container || !paginationEl) return;
+
+    // Read page from URL
+    var params = new URLSearchParams(window.location.search);
+    var currentPage = parseInt(params.get('page'), 10) || 1;
+    if (currentPage < 1) currentPage = 1;
+
+    var perPage = 100;
+    var sections = container.querySelectorAll('.eip-status-section');
+    var allRows = container.querySelectorAll('.eip-row');
+    var totalRows = allRows.length;
+    var totalPages = Math.max(1, Math.ceil(totalRows / perPage));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    function showPage(page) {
+      var start = (page - 1) * perPage;
+      var end = start + perPage;
+      var rowIndex = 0;
+
+      for (var s = 0; s < sections.length; s++) {
+        var sectionRows = sections[s].querySelectorAll('.eip-row');
+        var anyVisible = false;
+
+        for (var r = 0; r < sectionRows.length; r++) {
+          if (rowIndex >= start && rowIndex < end) {
+            sectionRows[r].style.display = '';
+            anyVisible = true;
+          } else {
+            sectionRows[r].style.display = 'none';
+          }
+          rowIndex++;
+        }
+
+        sections[s].style.display = anyVisible ? '' : 'none';
+      }
+
+      renderPagination(page);
+      updateUrl(page);
+      window.scrollTo({ top: container.offsetTop - 80, behavior: 'smooth' });
+    }
+
+    function renderPagination(page) {
+      var html = '';
+
+      // Prev button
+      if (page > 1) {
+        html += '<button class="eip-listing-pagination__btn" data-page="' + (page - 1) + '">&larr; Prev</button>';
+      } else {
+        html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--disabled" disabled>&larr; Prev</button>';
+      }
+
+      // Page numbers
+      var maxVisiblePages = 7;
+      var startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+      var endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      if (startPage > 1) {
+        html += '<button class="eip-listing-pagination__btn" data-page="1">1</button>';
+        if (startPage > 2) html += '<span class="eip-listing-pagination__dots">&hellip;</span>';
+      }
+
+      for (var p = startPage; p <= endPage; p++) {
+        if (p === page) {
+          html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--active">' + p + '</button>';
+        } else {
+          html += '<button class="eip-listing-pagination__btn" data-page="' + p + '">' + p + '</button>';
+        }
+      }
+
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) html += '<span class="eip-listing-pagination__dots">&hellip;</span>';
+        html += '<button class="eip-listing-pagination__btn" data-page="' + totalPages + '">' + totalPages + '</button>';
+      }
+
+      // Next button
+      if (page < totalPages) {
+        html += '<button class="eip-listing-pagination__btn" data-page="' + (page + 1) + '">Next &rarr;</button>';
+      } else {
+        html += '<button class="eip-listing-pagination__btn eip-listing-pagination__btn--disabled" disabled>Next &rarr;</button>';
+      }
+
+      // Row count
+      html += '<span class="eip-listing-pagination__info">' + totalRows + ' total EIPs</span>';
+
+      paginationEl.innerHTML = html;
+
+      // Bind click handlers
+      var btns = paginationEl.querySelectorAll('[data-page]');
+      for (var b = 0; b < btns.length; b++) {
+        btns[b].addEventListener('click', function() {
+          showPage(parseInt(this.getAttribute('data-page'), 10));
+        });
+      }
+    }
+
+    function updateUrl(page) {
+      var url = new URL(window.location);
+      if (page > 1) {
+        url.searchParams.set('page', page);
+      } else {
+        url.searchParams.delete('page');
+      }
+      window.history.replaceState({ page: page }, '', url.toString());
+    }
+
+    showPage(currentPage);
+  });
+</script>
