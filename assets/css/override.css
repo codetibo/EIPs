@@ -2027,7 +2027,8 @@ html[data-theme="dark"] code {
 
 html[data-theme="dark"] pre {
   background: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: #1a1a28;
+  border-width: 0.5px;
 }
 
 html[data-theme="dark"] table th {
