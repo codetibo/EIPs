@@ -154,3 +154,19 @@ jobs:
           globs: |
             config/.markdownlint.yaml
             ${{ env.CHANGED_FILES }}
+
+  listing-filter-validate:
+    name: Listing Filter Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@fb404b9557c186e349162b0d8efb06e2bc36edea
+        with:
+          ruby-version: '3.1'
+
+      - name: Validate Listing Page Filters
+        run: ruby scripts/validate_listing_filters.rb
