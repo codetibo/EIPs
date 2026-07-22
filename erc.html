@@ -2,9 +2,17 @@
 layout: page
 title: ERC
 ---
-{% assign eips=site.pages|where:"category","ERC"|where_exp:"page","page.url contains '/EIPS/'" %}
+{% assign eips=site.pages|where:"type","Standards Track"|where:"category","ERC"|where_exp:"page","page.url contains '/EIPS/'"|where_exp:"page","page.status != 'Moved'" %}
 <div id="eip-listing-container">
 {% include eiptable.html eips=eips %}
 </div>
+
+{% assign erc_count = eips | size %}
+{% if erc_count == 0 %}
+<div style="padding: 2rem 0; color: var(--color-text-secondary);">
+  <p>ERCs have been moved to the <a href="https://github.com/ethereum/ercs">ethereum/ercs</a> repository.</p>
+  <p>View the full ERC listing at <a href="https://eips.ethereum.org/erc">eips.ethereum.org/erc</a>.</p>
+</div>
+{% endif %}
 <div id="eip-load-more-sentinel" class="eip-load-more-sentinel"></div>
 {% include infinite-scroll-table.html %}

@@ -2,7 +2,7 @@
 layout: page
 title: Meta
 ---
-{% assign eips=site.pages|where:"type","Meta"|where_exp:"page","page.url contains '/EIPS/'" %}
+{% assign eips=site.pages|where:"type","Meta"|where_exp:"page","page.url contains '/EIPS/'"|where_exp:"page","page.status != 'Moved'" %}
 <div id="eip-listing-container">
 {% include eiptable.html eips=eips %}
 </div>
