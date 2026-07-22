@@ -918,6 +918,12 @@ html[data-theme="dark"] .eip-theme-toggle__moon {
 }
 
 /* ----- Infinite scroll sentinel for listing tables ----- */
+
+/* Hidden class for table rows controlled by infinite scroll */
+.eip-tr-hidden {
+  display: none !important;
+}
+
 .eip-load-more-sentinel {
   display: flex;
   flex-direction: column;

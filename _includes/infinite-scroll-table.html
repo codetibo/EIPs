@@ -83,7 +83,7 @@
     for (var s = 0; s < sections.length; s++) {
       var anyVisible = false;
       for (var r = 0; r < sections[s].rows.length; r++) {
-        if (sections[s].rows[r].style.display !== 'none') {
+        if (!sections[s].rows[r].classList.contains('eip-tr-hidden')) {
           anyVisible = true;
           break;
         }
@@ -104,7 +104,7 @@
     setTimeout(function() {
       var loaded = 0;
       for (var i = shownCount; i < totalCount && loaded < batchSize; i++) {
-        allRows[i].row.style.display = '';
+        allRows[i].row.classList.remove('eip-tr-hidden');
         loaded++;
         shownCount++;
       }
@@ -131,7 +131,7 @@
   function init() {
     // Hide all rows first
     for (var i = 0; i < totalCount; i++) {
-      allRows[i].row.style.display = 'none';
+      allRows[i].row.classList.add('eip-tr-hidden');
     }
 
     shownCount = 0;

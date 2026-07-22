@@ -14,13 +14,19 @@
 
   var searchIndex = [];
   var baseurl = window.EIP_BASEURL || '';
+  var indexLoadFailed = false;
 
   function loadIndex() {
-    if (searchIndex.length > 0) return;
+    if (searchIndex.length > 0 || indexLoadFailed) return;
     fetch(baseurl + '/search-index.json')
       .then(function (r) { return r.json(); })
       .then(function (data) { searchIndex = data; })
-      .catch(function () { /* degrade silently */ });
+      .catch(function () { indexLoadFailed = true; });
+  }
+
+  function debounce(fn, ms) {
+    var timer;
+    return function () { clearTimeout(timer); timer = setTimeout(fn, ms); };
   }
 
   function tokenize(text) {
@@ -206,11 +212,6 @@
       resultsEl.classList.add('eip-search__results--visible');
     }
 
-    function debounce(fn, ms) {
-      var timer;
-      return function () { clearTimeout(timer); timer = setTimeout(fn, ms); };
-    }
-
     var onInput = debounce(function () {
       renderDropdown(search(input.value));
     }, 200);
@@ -306,11 +307,13 @@
 
     // Re-run search when index finishes loading (handles race condition)
     var indexCheckInterval = setInterval(function() {
-      if (searchIndex.length > 0) {
+      if (searchIndex.length > 0 || indexLoadFailed) {
         clearInterval(indexCheckInterval);
-        var q = pageInput.value.trim();
-        if (q.length >= 2) {
-          doSearchAndRender();
+        if (searchIndex.length > 0) {
+          var q = pageInput.value.trim();
+          if (q.length >= 2) {
+            doSearchAndRender();
+          }
         }
       }
     }, 100);
@@ -543,11 +546,6 @@
     }
 
     // Live search on input
-    function debounce(fn, ms) {
-      var timer;
-      return function () { clearTimeout(timer); timer = setTimeout(fn, ms); };
-    }
-
     pageInput.addEventListener('input', debounce(function () {
       currentPage = 1;
       doSearchAndRender();

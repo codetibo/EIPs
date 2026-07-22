@@ -243,26 +243,26 @@
 
       // Keyboard shortcut: Cmd+K / Ctrl+K / / to focus search
       (function() {
-        var searchInput = document.getElementById('eip-search-input');
-        if (searchInput) {
-          document.addEventListener('keydown', function(e) {
-            // '/' — but not when typing in an input/textarea
-            if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
-              var tag = e.target.tagName;
-              if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.target.isContentEditable) {
-                e.preventDefault();
-                searchInput.focus();
-                searchInput.select();
-              }
-            }
-            // Cmd+K or Ctrl+K
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-              e.preventDefault();
-              searchInput.focus();
-              searchInput.select();
-            }
-          });
+        function getSearchInput() {
+          return document.getElementById('eip-search-input') || document.getElementById('eip-search-page-input');
         }
+        document.addEventListener('keydown', function(e) {
+          // '/' — but not when typing in an input/textarea
+          if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+            var tag = e.target.tagName;
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !e.target.isContentEditable) {
+              e.preventDefault();
+              var si = getSearchInput();
+              if (si) { si.focus(); si.select(); }
+            }
+          }
+          // Cmd+K or Ctrl+K
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            var si = getSearchInput();
+            if (si) { si.focus(); si.select(); }
+          }
+        });
       })();
 
       // Scroll-to-top button (create element + attach behavior)
