@@ -25,7 +25,7 @@
           {% elsif status == "Withdrawn" %}
             <td class="withdrawn-reason">{{ page.withdrawal-reason | xml_escape }}</td>
           {% endif %}
-          <td class="title">{{page.title|xml_escape}}</td>
+          <td class="title">{{page.title|default:"—"|xml_escape}}</td>
           <td class="author">{% include authorlist.html authors=page.author %}</td>
         </tr>
       {% endfor %}
