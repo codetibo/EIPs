@@ -1,0 +1,107 @@
+# =============================================================================
+# Sync EIPs from Upstream
+# =============================================================================
+# Periodically checks the upstream ethereum/EIPs repository for new or updated
+# EIP files, syncs them to this fork's personal-site branch, and repatches the
+# ERC metadata from the ethereum/ercs repository.
+#
+# Schedule: Daily at 06:00 UTC
+# Trigger:  Manual (workflow_dispatch), push to personal-site, and schedule
+# =============================================================================
+
+name: Sync EIPs from upstream
+
+on:
+  schedule:
+    # Daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      skip_commit:
+        description: 'Skip commit and push (dry-run mode)'
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches:
+      - personal-site
+
+# Limit to one concurrent sync per branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync EIP files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      # ---------------------------------------------------------------
+      # Step 1: Checkout the personal-site branch with full history
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: personal-site
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ---------------------------------------------------------------
+      # Step 2: Set up Python for the ERC metadata script
+      # ---------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      # ---------------------------------------------------------------
+      # Step 3: Run the sync script (compares upstream, downloads changes,
+      #         runs ERC metadata patcher)
+      # ---------------------------------------------------------------
+      - name: Sync EIP files from upstream
+        id: sync
+        run: |
+          bash scripts/sync-eips.sh 2>&1
+          
+          # Check if there are changes to commit
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_detected=true" >> $GITHUB_OUTPUT
+            echo "CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "changes_detected=false" >> $GITHUB_OUTPUT
+            echo "CHANGED=false" >> $GITHUB_ENV
+          fi
+
+      # ---------------------------------------------------------------
+      # Step 4: Commit and push changes (unless dry-run)
+      # ---------------------------------------------------------------
+      - name: Commit and push changes
+        if: steps.sync.outputs.changes_detected == 'true' && !inputs.skip_commit
+        run: |
+          git config user.name "EIP Sync Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add -A
+          git commit -m "Sync EIPs from upstream ethereum/EIPs ($(date +'%Y-%m-%d'))
+
+Automated sync from ethereum/EIPs@${{ github.sha }}
+Includes ERC metadata patches from ethereum/ercs."
+          
+          git push origin personal-site
+          echo "✓ Changes committed and pushed to personal-site"
+
+      - name: Dry-run — changes found but commit skipped
+        if: steps.sync.outputs.changes_detected == 'true' && inputs.skip_commit
+        run: |
+          echo "⚠ Dry-run mode — changes detected but not committed."
+          git status --short
+
+      - name: No changes to sync
+        if: steps.sync.outputs.changes_detected == 'false'
+        run: |
+          echo "✓ All EIP files are up to date with upstream."
