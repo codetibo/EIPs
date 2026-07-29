@@ -20,6 +20,7 @@ This document provides a detailed overview of all features implemented on the [E
 - [12. ERC Metadata Population](#12-erc-metadata-population)
 - [13. Hero Section with Statistics](#13-hero-section-with-statistics)
 - [14. Developer Utilities](#14-developer-utilities)
+- [15. EIP Sync Workflow](#15-eip-sync-workflow)
 
 ---
 
@@ -375,6 +376,46 @@ python3 scripts/fetch-erc-metadata.py
 
 ### Key config
 - `_config.yml` — Site configuration with Jekyll settings, header pages (including search), URL, and permalink structure
+
+---
+
+## 15. EIP Sync Workflow
+
+A GitHub Actions workflow that periodically synchronizes EIP files from the upstream [`ethereum/EIPs`](https://github.com/ethereum/EIPs) repository to this fork, ensuring the site stays up to date with the latest EIP proposals and revisions.
+
+### How it works
+
+The workflow runs on three triggers:
+- **Scheduled** — Daily at 06:00 UTC (`cron: '0 6 * * *'`)
+- **Push** — Automatically triggered on every push to the `personal-site` branch
+- **Manual** — Can be triggered on demand via the GitHub Actions UI (`workflow_dispatch`) with an optional dry-run mode
+
+### Sync process (`scripts/sync-eips.sh`)
+
+The sync script performs the following steps:
+
+1. **Checkout** — Ensures the `personal-site` branch is checked out
+2. **Fetch upstream** — Adds `ethereum/EIPs` as an upstream remote and fetches the latest `master` branch (`git fetch upstream master --depth=50`)
+3. **Detect changes** — Uses `git diff --name-only upstream/master -- EIPS/` to find new and modified EIP files
+4. **Download updates** — For each changed file, checks out the upstream version with `git checkout upstream/master -- <file>`
+5. **Handle deletions** — Compares the upstream EIPS directory tree with the local one using `git ls-tree` and removes files that no longer exist in the upstream repo
+6. **Re-patch ERCs** — Runs `scripts/fetch-erc-metadata.py` to re-apply real ERC metadata (titles, authors, statuses) from the [`ethereum/ercs`](https://github.com/ethereum/ercs) repository, since upstream only contains stub files for ERCs
+7. **Commit and push** — If any files changed, commits with a descriptive message including the date and pushes back to `personal-site`, which triggers a new GitHub Pages deployment
+
+### Change detection summary
+
+On the first run, **378 EIP files were synced**: 2 new EIPs (EIP-8333, EIP-8337) and 376 modified files across all status types. All 365 ERC stub files were re-patched with real metadata.
+
+### Concurrency and safety
+
+- **Concurrency** — The workflow uses `concurrency` groups to limit to one running sync per branch, with `cancel-in-progress: true` to cancel stale runs
+- **Dry-run mode** — When triggered manually with the `skip_commit` input, the workflow detects changes without committing them, showing a `git status --short` summary instead
+- **Permissions** — Requires `contents: write` for the GITHUB_TOKEN to push changes
+
+### Key files
+- `.github/workflows/sync-eips.yml` — GitHub Actions workflow definition
+- `scripts/sync-eips.sh` — Bash script that performs the EIP comparison and sync logic
+- `scripts/fetch-erc-metadata.py` — Python ERC metadata patcher (called as part of the sync)
 
 ---
 
