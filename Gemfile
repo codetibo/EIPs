@@ -12,8 +12,11 @@ gem "minima", "~> 2.0"
 
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "github-pages", "228"
+  gem "github-pages", "~> 228"
 end
+
+# Required for Faraday v2.0+ compatibility with GitHub Pages build
+gem "faraday-retry"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
