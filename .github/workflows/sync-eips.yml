@@ -6,7 +6,12 @@
 # ERC metadata from the ethereum/ercs repository.
 #
 # Schedule: Daily at 06:00 UTC
-# Trigger:  Manual (workflow_dispatch), push to personal-site, and schedule
+# Trigger:  Manual (workflow_dispatch) and scheduled
+# =============================================================================
+# NOTE: The `push` trigger is intentionally omitted to prevent an infinite
+# loop. When the workflow pushes changes to personal-site, GitHub would
+# re-trigger the workflow. Use the manual trigger or wait for the daily
+# schedule instead.
 # =============================================================================
 
 name: Sync EIPs from upstream
@@ -22,13 +27,10 @@ on:
         required: false
         default: false
         type: boolean
-  push:
-    branches:
-      - personal-site
 
-# Limit to one concurrent sync per branch
+# Limit to one concurrent sync — cancel any running one
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
@@ -37,7 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: read
 
     steps:
       # ---------------------------------------------------------------
@@ -57,51 +58,49 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'
 
       # ---------------------------------------------------------------
-      # Step 3: Run the sync script (compares upstream, downloads changes,
-      #         runs ERC metadata patcher)
+      # Step 3: Run the sync script
       # ---------------------------------------------------------------
       - name: Sync EIP files from upstream
         id: sync
         run: |
           bash scripts/sync-eips.sh 2>&1
-          
-          # Check if there are changes to commit
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "changes_detected=true" >> $GITHUB_OUTPUT
-            echo "CHANGED=true" >> $GITHUB_ENV
-          else
-            echo "changes_detected=false" >> $GITHUB_OUTPUT
-            echo "CHANGED=false" >> $GITHUB_ENV
-          fi
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
 
       # ---------------------------------------------------------------
       # Step 4: Commit and push changes (unless dry-run)
       # ---------------------------------------------------------------
       - name: Commit and push changes
-        if: steps.sync.outputs.changes_detected == 'true' && !inputs.skip_commit
+        if: steps.sync.outputs.exit_code == '0' && !inputs.skip_commit
         run: |
+          # Check if there are any changes
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "✓ No changes to commit."
+            exit 0
+          fi
+
           git config user.name "EIP Sync Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          git add -A
-          git commit -m "Sync EIPs from upstream ethereum/EIPs ($(date +'%Y-%m-%d'))
 
-Automated sync from ethereum/EIPs@${{ github.sha }}
-Includes ERC metadata patches from ethereum/ercs."
-          
+          git add -A
+          CHANGED_COUNT=$(git diff --cached --name-only -- EIPS/ | wc -l)
+          git commit -m "Sync EIPs from upstream ethereum/EIPs ($(date +'%Y-%m-%d'))" \
+            -m "Automated sync from upstream. ${CHANGED_COUNT} file(s) updated." \
+            -m "Includes ERC metadata patches from ethereum/ercs."
+
           git push origin personal-site
           echo "✓ Changes committed and pushed to personal-site"
 
-      - name: Dry-run — changes found but commit skipped
-        if: steps.sync.outputs.changes_detected == 'true' && inputs.skip_commit
+      - name: Dry-run or no changes
+        if: always()
         run: |
-          echo "⚠ Dry-run mode — changes detected but not committed."
-          git status --short
-
-      - name: No changes to sync
-        if: steps.sync.outputs.changes_detected == 'false'
-        run: |
-          echo "✓ All EIP files are up to date with upstream."
+          echo "Exit code: ${{ steps.sync.outputs.exit_code }}"
+          if [ "${{ steps.sync.outputs.exit_code }}" != "0" ]; then
+            echo "⚠ Sync script exited with error. Check the logs above."
+          elif [ -n "$(git status --porcelain)" ] && [ "${{ inputs.skip_commit }}" == "true" ]; then
+            echo "⚠ Dry-run mode — changes detected but not committed:"
+            git status --short
+          elif [ -z "$(git status --porcelain)" ]; then
+            echo "✓ All EIP files are up to date with upstream."
+          fi
